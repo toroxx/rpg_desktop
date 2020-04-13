@@ -1,0 +1,32 @@
+header {
+    -webkit-app-region: drag;
+    height: 26px;
+    background-color: #03c2fc;
+    color: #000;
+    font-weight: bold;
+    padding: none;
+    margin: 0px;
+
+    #title {
+        position: fixed;
+        top: 0px;
+        left: 6px;
+    }
+
+    #title-bar-btns {
+        -webkit-app-region: no-drag;
+        background: none;
+        position: fixed;
+        top: 0px;
+        right: 6px;
+    }
+
+    .btn {
+        background-color: #03c2fc;
+        margin: 0px;
+        padding: none;
+        color: #fff;
+        font-weight: bold;
+        border: 0px;
+    }
+}

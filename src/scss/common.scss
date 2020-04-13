@@ -1,0 +1,39 @@
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  padding: 0px;
+  margin: 0px;
+  height: 100%;
+  overflow: hidden;
+
+  background-color: #000;
+  /* v+h align center */
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+div#root {
+  height: 100%;
+}
+
+div.window {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  $border-style: 2px solid #03c2fc;
+  border-left: $border-style;
+  border-right: $border-style;
+  border-bottom: $border-style;
+}
