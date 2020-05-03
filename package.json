@@ -6,11 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "babel": "babel",
-    "prodbuild": "webpack",
+    "prodbuild": "webpack --mode=production",
     "devbuild": "webpack --mode=development",
     "devwatch": "webpack --mode=development --watch",
     "start": "electron .",
-    "build": "electron-packager . RPG --platform=win32 --arch=x64 --icon=icons/Mushroom.ico --out=dist --ignore=node_modules/electron-* --version-string.CompanyName=RPG --version-string.ProductName=RPG"
+    "build": "electron-packager . RPG  --overwrite --platform=win32 --arch=x64 --icon=icons/Mushroom.ico --out=dist --ignore=node_modules/electron-* --version-string.CompanyName=RPG --version-string.ProductName=RPG"
   },
   "author": "Lawrence Lau",
   "license": "MIT",
@@ -20,11 +20,9 @@
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.7.4",
     "babel-loader": "^8.0.6",
-    "bootstrap": "^4.4.1",
     "css-loader": "^3.2.0",
     "electron": "^8.2.1",
     "electron-packager": "^14.1.1",
-    "extract-text-webpack-plugin": "^3.0.2",
     "node-sass": "^4.13.0",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -36,7 +34,12 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.4",
+    "@tweenjs/tween.js": "^18.5.0",
+    "dialogs": "^2.0.1",
+    "dotenv": "^8.2.0",
+    "image-size": "^0.8.3",
     "nedb": "^1.8.0",
+    "pixi-layers": "^0.2.3",
     "pixi-text-input": "^1.0.4",
     "pixi-textinput-v5": "^4.0.0-beta.10",
     "pixi.js": "^5.2.1"

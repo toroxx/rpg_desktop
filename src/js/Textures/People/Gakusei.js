@@ -21,7 +21,7 @@ for (let y = 0; y < 4; y++) {
         }
 
         const tmp = new PIXI.Texture(base, new PIXI.Rectangle(WIDTH * x, HEIGHT * y, WIDTH, HEIGHT));
-        if (p["p" + z][po] == undefined) {
+        if (p["p" + z][po] == void(0)) {
             p["p" + z][po] = [];
         }
         p["p" + z][po].push(tmp);
@@ -33,7 +33,7 @@ for (let y = 0; y < 4; y++) {
 for (let y = 0; y < 4; y++) {
     for (let x = 0; x < 3; x++) {
         const tmp = new PIXI.Texture(base, new PIXI.Rectangle(WIDTH * x, HEIGHT * (y + 4), WIDTH, HEIGHT));
-        if (p["p" + (y + 1)][po] == undefined) {
+        if (p["p" + (y + 1)][po] == void(0)) {
             p["p" + (y + 1)][po] = [];
         }
 

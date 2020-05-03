@@ -8,14 +8,17 @@ module.exports = {
     node: {
         fs: "empty",
         "child_process": "empty",
+        electron: "empty",
+        dialogs: "empty",
     },
     externals: {
         "nedb": 'commonjs nedb',
     },
     module: {
         rules: [
+            
             {
-                test: /\.scss$/,
+                test: /\.(scss|sass|css)$/,
                 exclude: /(node_modules|bower_components)/,
                 use: [
                     {

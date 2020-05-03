@@ -20,23 +20,23 @@ function createWindow() {
 
         minWidth: 1024, minHeight: 576,
         //x: mainScreenSize.width - 200, y: mainScreenSize.height - 440,
-        minimizable : true,
-        maximizable :true,
+        //minimizable: false,
+        //maximizable: false,
         //maximizable: true,
         // 1. Remove the frame of the window
         frame: true,
         //fullscreenable: true,
         //transparent: true,
-        //resizable: true,
+        //resizable: false,
         fullscreen: false,
         //titleBarStyle: "hidden",
         webPreferences: {
-            //preload: path.join(__dirname , 'preload.js'),
+            //preload: path.join(__dirname , '/app/required.js'),
             // 2. Enable Node.js integration
             nodeIntegration: true
         }
     })
-    mainWindow.setMenuBarVisibility(false)
+    //mainWindow.setMenuBarVisibility(false)
 
     // and load the index.html of the app.
     mainWindow.loadURL(url.format({

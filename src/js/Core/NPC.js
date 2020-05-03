@@ -1,7 +1,7 @@
 
 
 class NPC {
-    constructor(elem, name, message) {
+    constructor(elem, name, message = []) {
         this.elem = elem;
         this.name = name;
         this.messages = messages;

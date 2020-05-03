@@ -1,101 +1,181 @@
 import * as PIXI from 'pixi.js';
 import Tile from './Tile';
+import AnimateClock from './AnimateClock';
 
-import * as BG from '../Textures/Background';
+import Maps from '../Textures/Maps';
+
 
 class TileMap extends PIXI.Container {
-    constructor(tile_w, tile_h, count_w, count_h, cx, cy) {
+    constructor(app, stage, tile_size) {
         super();
-        this.cx = cx;
-        this.cy = cy;
-        this.tile_w = tile_w;
-        this.tile_h = tile_h;
-        this.count_w = count_w;
-        this.count_h = count_h;
 
-        //background
-        let bg = new PIXI.Container();
-        this.bglayer = bg;
-        this.addChild(bg);
-
-        //mask
-        var px_mask_outter_bounds = new PIXI.Graphics();
-        px_mask_outter_bounds.beginFill(0xFFFFFF);
-        px_mask_outter_bounds.drawRect(0, 0, tile_w * count_w, tile_h * count_h);
-        px_mask_outter_bounds.endFill();
-
-        this.addChild(px_mask_outter_bounds);
-        this.mask = px_mask_outter_bounds;
-        this.map_json = null;
-        this.sortableChildren = true;
-
-
-        this.tiles = {};
+        this.app = app;
+        this.stage = stage;
+        this.tile_size = tile_size;
+        this.tileMap = {};
+        this.map_name = '';
+        this.clock = null;
     }
 
-    loadMap(map_json) {
-        this.map_json = map_json;
-        const { map, item } = map_json;
-
-        for (let y = 0; y < map.length; y++) {
-            for (let x = 0; x < map[y].length; x++) {
-                let tile_id = map[y][x];
-
-                let textures = [[PIXI.Texture.EMPTY, 1]];
-
-                const { layers } = item[tile_id];
-                if (layers != null) {
-                    for (let k in layers) {
-                        const { bg = null, id = null, zIndex = 1 } = layers[k];
-                        if (BG[bg] && BG[bg][id]) {
-                            textures.push([BG[bg][id], zIndex]);
-                        }
-                    }
-                }
+    getMaps() {
+        return Maps;
+    }
 
 
-                const tile = new Tile(this.bglayer, textures, { tile_id: tile_id, x: x * this.tile_w, y: y * this.tile_h, w: this.tile_w, h: this.tile_h });
-                this.tiles[x + ':' + y] = tile;
+    getTileCount() {
+        return [
+            Math.floor(this.app.screen.width / this.tile_size),
+            Math.floor(this.app.screen.height / this.tile_size)
+        ]
+    }
+    getMapSize() {
+        let x = 0, y = Object.keys(this.tileMap).length;
+        if (y > 0) {
+            x = Object.keys(this.tileMap[0]).length;
+        }
+        return [x, y];
+
+    }
+    getTileCenter() {
+        let [col, row] = this.getTileCount();
+        return [Math.floor(col / 2), Math.floor(row / 2)];
+    }
+    getTile(x, y) {
+        return (this.tileMap && this.tileMap[y] && this.tileMap[y][x]) || [];
+    }
+
+    getInfoTiles() {
+        if (!Maps[this.map_name]) {
+            return {};
+        }
+        let { infoTiles } = Maps[this.map_name];
+        return infoTiles;
+    }
+    getEntryPoints() {
+        if (!Maps[this.map_name]) {
+            return {};
+        }
+        let { map, item, mapTileOption, infoTiles } = Maps[this.map_name];
+
+        let p = {};
+        for (let k in infoTiles) {
+            if (infoTiles[k].params.entrypoint) {
+                p[k] = infoTiles[k].tiles[0];
             }
         }
+        return p;
     }
 
-    getBackground() {
-        return this.bglayer;
-    }
-
-    getTileData(x, y) {
-        const { map, item } = this.map_json;
-        let tile_id = map[y][x];
-        if (item[tile_id] != undefined) {
-            return item[tile_id];
+    moveTo(x = -1, y = -1, speed = 500) {
+        let [col, row] = this.getTileCenter();
+        //console.log('tilemap.moveto', x, y, col, row, this.x, this.y);
+        let nx = (col);
+        let ny = (row);
+        if (x > -1) {
+            nx += -x;
         }
-        return null;
-    }
-
-    getTile(x, y) {
-        const { map, item } = this.map_json;
-        let tile_id = map[y][x];
-        if (item[tile_id] != undefined) {
-            return item[tile_id];
+        if (y > -1) {
+            ny += -y;
         }
-        return null;
+        //console.log('tilemap.moveto2', x, y, col, row, nx, ny);
+        if (speed == 0) {
+            this.x = nx * this.tile_size;
+            this.y = ny * this.tile_size;
+            return;
+        }
+
+        let coords = { x: this.x, y: this.y };
+        let tween = new TWEEN.Tween(coords)
+            .to({ x: nx * this.tile_size, y: ny * this.tile_size }, speed)
+            .easing(TWEEN.Easing.Quadratic.In)
+            .onUpdate(() => {
+                this.x = coords.x;
+                this.y = coords.y;
+            })
+            .start();
+    }
+    clearMap() {
+        for (let y in this.tileMap) {
+            let row = this.tileMap[y];
+            for (let x in row) {
+                let tile_info = this.tileMap[y][x];
+                this.removeChild(tile_info);
+            }
+        }
+
+        this.tileMap = {};
     }
 
-    getTileWidth() {
-        return this.tile_w;
+    loadMap(map_name) {
+        this.clearMap();
+        this.map_name = map_name;
+        let { map, item, mapTileOption, infoTiles } = Maps[this.map_name];
+
+        if (this.clock != null) {
+            this.clock.destroy();
+        }
+        this.clock = new AnimateClock(this.app, map, item, mapTileOption, 4,
+            this.animation_callback.bind(this));
+
+
+        map.map((row, y) => {
+            row.map((tile_info, x) => {
+                if (this.tileMap[y] == void (0)) {
+                    this.tileMap[y] = {};
+                }
+                if (this.tileMap[y][x] == void (0)) {
+                    this.tileMap[y][x] = {};
+                }
+                const tile = new Tile(this.stage, tile_info, item, infoTiles, this.tile_size, x, y);
+
+                this.addChild(tile);
+
+                this.tileMap[y][x] = tile;
+
+            });
+        })
     }
-    getTileHeight() {
-        return this.tile_h;
+
+    goToMapEntryPoint(map_name, entrypoint, player) {
+        this.loadMap(map_name);
+        let entrypoints = this.getEntryPoints();
+
+        let [tile_id, i, x, y] = entrypoints[entrypoint]
+        player.moveTo(x, y, 0);
+        this.moveTo(x, y, 0);
     }
 
-    moveTo(x, y) {
+    animation_callback(tile_ani_layer, InfoID, TileID, framePerLoop, y, x, txtClock) {
+        let { named } = this.getTile(x, y);
 
-        this.bglayer.x = this.tile_w * (this.cx - x);
-        this.bglayer.y = this.tile_h * (this.cy - y);
+        let { layers } = tile_ani_layer;
+        let anis = {};
+        let closest = 0;
+        for (let k in layers) {
+            let { name, ani, zIndex } = layers[k];
+            ani *= framePerLoop;
+            anis[ani] = [name, zIndex];
 
+            if (txtClock > ani) {
+                closest = ani;
+            }
+        }
 
+        for (let ani in anis) {
+            const [name, zIndex] = anis[ani];
+            const layer = named[name];
+            if (layer == void (0)) {
+                continue;
+            }
+            layer.parentLayer = this.stage.getDisplayLevel((ani == closest ? zIndex : -1));
+        }
     }
+
+    tileclick_callback(e) {
+        console.log(e.target);
+    }
+
+
 }
 
 export default TileMap;
