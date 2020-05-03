@@ -1,13 +1,5 @@
-const { app, BrowserWindow, screen } = electron.remote;
-const display = screen.getPrimaryDisplay();
-const rootpath = app.getAppPath();
 
-export function center_screen_pos(w, h) {
-    const { width, height } = display.size;
-    return { x: (width - w) / 2, y: (height - h) / 2 };
-}
-
-
+const { app: ele_app, BrowserWindow, screen } = electron.remote;
 export function open_win(w, h, pos, page_path, params) {
     let { x = 0, y = 0 } = pos;
     console.log(w, h, pos);
@@ -21,7 +13,7 @@ export function open_win(w, h, pos, page_path, params) {
             nodeIntegration: true
         }
     });
-    console.log(page_path,params);
+    console.log(page_path, params);
     var queryString = "";
     for (let key in params) {
         let val = params[key];
