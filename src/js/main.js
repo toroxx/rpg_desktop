@@ -3,6 +3,7 @@ import '../scss/main.scss';
 import * as PIXI from 'pixi.js';
 
 import * as Stages from './Stages';
+import * as Util from './Util';
 
 //http://yms.main.jp/dotartworld
 //https://bb-entertainment-blog.blogspot.com/
@@ -28,6 +29,8 @@ const pixi = new PIXI.Application({
     //antialias: true,
     resolution: devicePixelRatio
 });
+pixi.INIT_WIDTH = WIDTH;
+pixi.INIT_HEIGHT = HEIGHT;
 
 pixi.ticker.add(dt => gameLoop(dt));
 function gameLoop() {
@@ -36,16 +39,23 @@ function gameLoop() {
 }
 document.body.appendChild(pixi.view);
 
+//Stages
+
 pixi.stage = new Stages.Main(pixi, tile_size, min_level, max_level);
 pixi.stage.x = 0;
 pixi.stage.y = 0;
 pixi.stage.sortableChildren = true;
 
-
-window.addEventListener('keydown', function (e) {
+//events
+window.addEventListener('keydown', (e) => {
     pixi.stage.keydownHandler(e)
 })
+window.addEventListener('resize', (e) => {
+    Util.screenResizeHandler(pixi.stage)
+});
 
 
-
-
+//init
+setTimeout(() => {
+    Util.screenResizeHandler(pixi.stage)
+}, 1);

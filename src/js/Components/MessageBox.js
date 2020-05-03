@@ -5,8 +5,12 @@ class MessageBox extends PIXI.Container {
         super();
         this.app = app;
         this.stage = stage;
-        let width = app.screen.width;
-        let height = app.screen.height;
+
+        let WIDTH = this.app.INIT_WIDTH;
+        let HEIGHT = this.app.INIT_HEIGHT;
+
+        let width = WIDTH;
+        let height = HEIGHT;
 
         this.display_x = (width - w) / 2
         this.display_y = height - (h + padding);
@@ -64,8 +68,11 @@ class MessageBox extends PIXI.Container {
     }
 
     hidden() {
-        this.x = -10 * this.app.screen.width;
-        this.y = -10 * this.app.screen.height;
+        let WIDTH = this.app.INIT_WIDTH;
+        let HEIGHT = this.app.INIT_HEIGHT;
+
+        this.x = -10 * WIDTH;
+        this.y = -10 * HEIGHT;
         this.parentLayer = this.stage.getDisplayLevelMin();
     }
 }

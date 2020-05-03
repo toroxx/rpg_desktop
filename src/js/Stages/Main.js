@@ -5,23 +5,24 @@ class Main extends Components.Stage {
         super(app, tile_size, min_level, max_level);
         this.app = app;
 
-        let WIDTH = app.screen.width;
-        let HEIGHT = app.screen.height;
-        this.width = WIDTH;
-        this.height = HEIGHT;
+        this.width = app.INIT_WIDTH;
+        this.height = app.INIT_HEIGHT;
 
         //message box
-        const messagebox = new Components.MessageBox(app, this, 800, 100,50);
+        const messagebox = new Components.MessageBox(app, this, 800, 100, 50);
         this.messagebox = messagebox;
         this.addChild(messagebox);
         messagebox.showText('testing', 'center');
 
         //map container
         const map_container = new PIXI.Container();
-        map_container.width = WIDTH;
-        map_container.height = HEIGHT;
+        let [adj_x, adj_y] = Util.getCenterXY(this, map_container);
+        map_container.width = app.INIT_WIDTH;
+        map_container.height = app.INIT_HEIGHT;
+        map_container.x = adj_x;
+        map_container.y = adj_y;
+        this.map_container = map_container;
 
-        
         this.addChild(map_container);
 
         //tile map
@@ -44,11 +45,16 @@ class Main extends Components.Stage {
         tileMap.goToMapEntryPoint("Street01", 'test3', player);
 
 
-
-        console.log('stage', this.x, this.y, this.width, this.height, this.app.screen.width, this.app.screen.height);
-        console.log('tileMap', tileMap.x, tileMap.y, tileMap.width, tileMap.height);
-        console.log('tilex', tileMap.getTileCenter(), tileMap.getTileCount(), tileMap.getMapSize(), this.getTileMaxBound());
-
+        /*
+                console.log('stage',
+                    map_container.x, map_container.y,
+                    map_container.width, map_container.height,
+                    app.INIT_WIDTH, app.INIT_HEIGHT);
+                console.log('tileMap',
+                    tileMap.x, tileMap.y,
+                    tileMap.width, tileMap.height);
+                console.log('tilex', tileMap.getTileCenter(), tileMap.getTileCount(), tileMap.getMapSize(), this.getTileMaxBound());
+        */
         /*
 setTimeout(async () => {
     var paths = ['down', 'down', 'right', 'right', 'right',
@@ -67,6 +73,18 @@ setTimeout(async () => {
 */
 
 
+    }
+
+    screenResizeHandler() {
+        let { app, map_container, tileMap } = this;
+        /*
+        console.log('resize');
+        console.log('stage', map_container.x, map_container.y,
+            map_container.width, map_container.height,
+            app.INIT_WIDTH, app.INIT_HEIGHT);;
+        console.log('tileMap', tileMap.x, tileMap.y, tileMap.width, tileMap.height);
+        console.log('tilex', tileMap.getTileCenter(), tileMap.getTileCount(), tileMap.getMapSize(), this.getTileMaxBound());
+*/
     }
 
 

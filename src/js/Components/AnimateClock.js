@@ -4,7 +4,7 @@ let ani_txtclock = {};//counter value
 export default function AnimateClock(app, mapdata, tiledata, mapTileOption, offset, ani_callback) {
 
     this.destroy = () => {
-        console.log('Old Clocks clear');
+        //console.log('Old Clocks clear');
         for (let k in ani_clock) {
             try {
                 app.ticker.remove(ani_clock[k]);
@@ -76,14 +76,14 @@ export default function AnimateClock(app, mapdata, tiledata, mapTileOption, offs
             ani_clock[clock_key] = (delta) => {
 
                 ani_callback(tile_ani_layer[TileID], InfoID, TileID, framePerLoop, y, x, ani_txtclock[clock_key] + 1);
-               // console.log('.tileinfo.' + InfoID + ' span.frame', ani_txtclock[clock_key] + 1);
+                // console.log('.tileinfo.' + InfoID + ' span.frame', ani_txtclock[clock_key] + 1);
 
                 ani_txtclock[clock_key] = (ani_txtclock[clock_key] + 1) % framePerLoop;
             };
 
             app.ticker.add(ani_clock[clock_key]);
         }
-        console.log("ani_clock: ", ani_clock);
+        //console.log("ani_clock: ", ani_clock);
     }
 
     this.init();

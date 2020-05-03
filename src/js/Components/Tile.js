@@ -38,7 +38,7 @@ class Tile extends PIXI.Container {
         text.style = new PIXI.TextStyle({ fontSize: '10px', fill: 0xffffff })
         text.parentLayer = stage.getDisplayLevelMax();
         //console.log(x + "=" + y, text.width, text.height)
-        this.addChild(text);
+        //this.addChild(text);
 
         const highlight = new PIXI.Graphics();
         highlight.x = 0;

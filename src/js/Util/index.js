@@ -21,3 +21,23 @@ export function getCenterXY(target1, target2) {
         (target1.height - target2.height) / 2
     ];
 }
+
+export function screenResizeHandler(stage) {
+    let { app } = stage;
+    let WIDTH = app.INIT_WIDTH;
+    let HEIGHT = app.INIT_HEIGHT;
+
+    let ratio = Math.min(window.innerWidth / WIDTH, window.innerHeight / HEIGHT);
+    //console.log('screen', window.innerWidth, window.innerHeight, WIDTH, HEIGHT, ratio);
+
+    /*
+    console.log('screenResizeHandler', WIDTH, HEIGHT, ratio);
+    console.log(' app.renderer', app.renderer.width, app.renderer.height);
+    console.log(' app.screen', app.screen.width, app.screen.height);
+    */
+    stage.scale.x = stage.scale.y = ratio;
+    app.renderer.resize(Math.ceil(WIDTH * ratio), Math.ceil(HEIGHT * ratio));
+    stage.ratio = ratio;
+
+    stage.screenResizeHandler();
+}

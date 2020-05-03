@@ -23,9 +23,11 @@ class TileMap extends PIXI.Container {
 
 
     getTileCount() {
+        let WIDTH = this.app.INIT_WIDTH;
+        let HEIGHT = this.app.INIT_HEIGHT;
         return [
-            Math.floor(this.app.screen.width / this.tile_size),
-            Math.floor(this.app.screen.height / this.tile_size)
+            Math.floor(WIDTH / this.tile_size),
+            Math.floor(HEIGHT / this.tile_size)
         ]
     }
     getMapSize() {
