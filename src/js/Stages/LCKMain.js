@@ -9,8 +9,8 @@ class Main extends Components.Stage {
         super(app, tile_size, min_level, max_level);
         this.app = app;
 
-        this.npcs_mapping = Data.Main.npcs;
-        this.events_mapping = Data.Main.events;
+        this.npcs_mapping = Data.LCKMain.npcs;
+        this.events_mapping = Data.LCKMain.events;
 
         this.width = app.INIT_WIDTH;
         this.height = app.INIT_HEIGHT;
@@ -34,15 +34,15 @@ class Main extends Components.Stage {
         map_container.addChild(this.tileMap);
 
         //player
-        this.player = this.add_character('Gakusei', 'p2', 'down', 18);
+        this.player = this.add_character('Akunin3', 'p3', 'down', 18);
         this.tileMap.addChild(this.player);
 
         //npc 
         this.npcs = {};
 
         //init
-        this.messagebox.showText(Data.Main._('GAME_TITLE'), 'center');
-        this.tileMap.goToMapEntryPoint("Street01", 'test3', (x, y) => {
+        this.messagebox.showText(Data.LCKMain._('GAME_TITLE'), 'center');
+        this.tileMap.goToMapEntryPoint("LCKOffice", 'exit2', (x, y) => {
             this.loadNPCS();
             this.player.moveTo(x, y);
         });

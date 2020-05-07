@@ -3,6 +3,7 @@ import * as PIXI from 'pixi.js';
 class MessageBox extends PIXI.Container {
     constructor(app, stage, w, h, padding = 50) {
         super();
+        this.isShow = false;
         this.app = app;
         this.stage = stage;
 
@@ -50,14 +51,13 @@ class MessageBox extends PIXI.Container {
         this.addChild(textarea)
     }
     showText(text, align = 'left') {
+        this.isShow = true;
         this.msg_seq = 0;
 
         this.x = this.display_x;
         this.y = this.display_y;
         this.textarea.x = 10;
         this.textarea.y = 5;
-
-
 
         this.textarea.text = text;
         if (align == 'center') {
@@ -68,6 +68,7 @@ class MessageBox extends PIXI.Container {
     }
 
     hidden() {
+        this.isShow = false;
         let WIDTH = this.app.INIT_WIDTH;
         let HEIGHT = this.app.INIT_HEIGHT;
 
