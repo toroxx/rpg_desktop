@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 
 class Tile extends PIXI.Container {
-    constructor(stage, tile_info, item, infoTiles, tile_size, x, y) {
+    constructor(stage, tile_info, item, infoTiles, tile_size, tile_x, tile_y, callback) {
         super();
         this.stage = stage;
         this.interactive = true;
@@ -14,13 +14,15 @@ class Tile extends PIXI.Container {
         this.opts = opts;
         this.info = info;
 
-        this.x = x * tile_size;
-        this.y = y * tile_size;
+        this.tile_x = tile_x;
+        this.tile_y = tile_y;
+        this.x = tile_x * tile_size;
+        this.y = tile_y * tile_size;
         this.width = tile_size;
         this.height = tile_size;
-        this.highlightable = true;
+        this.highlightable = false;
 
-
+        this.callback = callback;
 
 
         let tile_rect = { x: 0, y: 0, width: tile_size, height: tile_size };
@@ -32,7 +34,7 @@ class Tile extends PIXI.Container {
         graphics.parentLayer = stage.getDisplayLevel(14);
         //this.addChild(graphics);
 
-        const text = new PIXI.Text(x + "=" + y);
+        const text = new PIXI.Text(tile_x + "=" + tile_y);
         text.x = 0;
         text.y = 0;
         text.style = new PIXI.TextStyle({ fontSize: '10px', fill: 0xffffff })
@@ -61,14 +63,16 @@ class Tile extends PIXI.Container {
     onButtonDown() {
         this.isdown = true;
         //this.texture = textureButtonDown;
+        if (typeof(this.callback) == "function") {
+            this.callback('ButtonDown', this);
+        }
     }
 
     onButtonUp() {
         this.isdown = false;
-        if (this.isOver) {
-            //this.texture = textureButtonOver;
-        } else {
-            // this.texture = textureButton;
+
+        if (typeof(this.callback) == "function") {
+            this.callback('ButtonUp', this);
         }
     }
 
@@ -77,8 +81,9 @@ class Tile extends PIXI.Container {
         if (this.isdown) {
             return;
         }
-        if (this.highlightable) {
-            this.addChild(this.highlight);
+
+        if (typeof(this.callback) == "function") {
+            this.callback('ButtonOver', this);
         }
         //this.texture = textureButtonOver;
     }
@@ -88,10 +93,22 @@ class Tile extends PIXI.Container {
         if (this.isdown) {
             return;
         }
-        if (this.highlightable) {
-            this.removeChild(this.highlight);
+
+        if (typeof(this.callback) == "function") {
+            this.callback('ButtonOut', this);
         }
         //this.texture = textureButton;
+    }
+
+    setHighlight(status) {
+        if (this.highlightable) {
+            if (status == true) {
+                this.addChild(this.highlight);
+                return;
+            }
+        }
+        this.removeChild(this.highlight);
+
     }
 
     makeLayers(layers, tile_rect, mask = null) {
@@ -99,6 +116,8 @@ class Tile extends PIXI.Container {
         let tileLayers = {};
         let namedLayers = {};
         if (layers != null) {
+
+            this.highlightable = true;
             for (let layer of layers) {
                 let { zIndex = 1, bg, id, name, ani, texture } = layer;
 
@@ -128,7 +147,6 @@ class Tile extends PIXI.Container {
         if (i['walkover'] === void (0) || i['walkover'] != true) {
             // graphics.lineStyle(1, 0xFF0000, 1);
             // graphics.drawRect(...Object.values(tile_rect));
-            this.highlightable = false;
         }
         if (i['moveleft'] == false) {
             effclass.push("non_moveleft");

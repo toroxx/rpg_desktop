@@ -6,9 +6,9 @@ import Maps from '../Textures/Maps';
 
 
 class TileMap extends PIXI.Container {
-    constructor(app, stage, tile_size) {
+    constructor(app, stage, tile_size, callback) {
         super();
-
+        this.callback = callback;
         this.app = app;
         this.stage = stage;
         this.tile_size = tile_size;
@@ -128,23 +128,30 @@ class TileMap extends PIXI.Container {
                 if (this.tileMap[y][x] == void (0)) {
                     this.tileMap[y][x] = {};
                 }
-                const tile = new Tile(this.stage, tile_info, item, infoTiles, this.tile_size, x, y);
+                const tile = new Tile(this.stage, tile_info, item, infoTiles, this.tile_size, x, y, (action, target) => {
+                    if (typeof(this.callback) == "function") {
+                        this.callback('Tile' + action, target, this);
+                    }
+                });
 
                 this.addChild(tile);
-
                 this.tileMap[y][x] = tile;
 
             });
         })
     }
 
-    goToMapEntryPoint(map_name, entrypoint, player) {
+    goToMapEntryPoint(map_name, entrypoint, callback = null) {
         this.loadMap(map_name);
         let entrypoints = this.getEntryPoints();
 
         let [tile_id, i, x, y] = entrypoints[entrypoint]
-        player.moveTo(x, y, 0);
+
         this.moveTo(x, y, 0);
+
+        if (typeof callback == "function") {
+            callback(x, y);
+        }
     }
 
     animation_callback(tile_ani_layer, InfoID, TileID, framePerLoop, y, x, txtClock) {
@@ -173,9 +180,6 @@ class TileMap extends PIXI.Container {
         }
     }
 
-    tileclick_callback(e) {
-        console.log(e.target);
-    }
 
 
 }
