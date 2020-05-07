@@ -1,9 +1,6 @@
 
-import Lang from '../../../resources/Lang/events.json';
-
-export function _($text) {
-    return (Lang[$text]) || [];
-
+export function _(lang_set, text, params = [], lang = 'default') {
+    return (lang_set[lang][text]) || [];
 }
 
 
